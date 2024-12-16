@@ -31,51 +31,14 @@ struct _GraphAllPairsShortestDistances {
 
 // Allocate memory and initialize the distance matrix
 // Compute the distances between vertices by running the Bellman-Ford algorithm
-GraphAllPairsShortestDistances* GraphAllPairsShortestDistancesExecute(Graph* g) {
-    assert(g != NULL);
+GraphAllPairsShortestDistances* GraphAllPairsShortestDistancesExecute(
+    Graph* g) {
+  assert(g != NULL);
 
-    // Alocar memória para o struct GraphAllPairsShortestDistances
-    GraphAllPairsShortestDistances* result = 
-        (GraphAllPairsShortestDistances*)malloc(sizeof(GraphAllPairsShortestDistances));
-    assert(result != NULL);
+  // COMPLETE THE CODE
 
-    // Armazenar o grafo
-    result->graph = g;
-
-    // Número de vértices no grafo
-    unsigned int numVertices = GraphGetNumVertices(g);
-
-    // Alocar memória para a matriz de distâncias
-    result->distance = (int**)malloc(numVertices * sizeof(int*));
-    assert(result->distance != NULL);
-
-    for (unsigned int i = 0; i < numVertices; i++) {
-        result->distance[i] = (int*)malloc(numVertices * sizeof(int));
-        assert(result->distance[i] != NULL);
-
-        // Inicializar a linha da matriz com "infinito" (-1)
-        for (unsigned int j = 0; j < numVertices; j++) {
-            result->distance[i][j] = -1;
-        }
-    }
-
-    // Para cada vértice, executar o algoritmo de Bellman-Ford
-    for (unsigned int i = 0; i < numVertices; i++) {
-        // Executa o algoritmo de Bellman-Ford a partir do vértice `i`
-        GraphBellmanFordAlg* bfResult = GraphBellmanFordAlgExecute(g, i);
-
-        // Preencher a matriz de distâncias com os resultados do Bellman-Ford
-        for (unsigned int j = 0; j < numVertices; j++) {
-            result->distance[i][j] = GraphBellmanFordAlgDistance(bfResult, j);
-        }
-
-        // Liberar os recursos do Bellman-Ford
-        GraphBellmanFordAlgDestroy(&bfResult);
-    }
-
-    return result;
+  return NULL;
 }
-
 
 void GraphAllPairsShortestDistancesDestroy(GraphAllPairsShortestDistances** p) {
   assert(*p != NULL);

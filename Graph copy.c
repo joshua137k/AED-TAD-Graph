@@ -133,35 +133,14 @@ Graph* GraphCreateComplete(unsigned int numVertices, int isDigraph) {
 // This function should never be called on an undirected graph
 // This function should never be called on a complete graph
 Graph* GraphCreateTranspose(const Graph* g) {
-    assert(g != NULL);
-    assert(g->isDigraph); // Garantir que é um grafo direcionado
-    assert(g->isComplete == 0); // Garantir que não é um grafo completo
+  assert(g != NULL);
+  assert(g->isDigraph);
+  assert(g->isComplete == 0);
 
-    // Criar um novo grafo vazio com os mesmos vértices
-    Graph* transpose = GraphCreate(g->numVertices, g->isDigraph, g->isWeighted);
+  // COMPLETE THE CODE
 
-    // Percorrer os vértices do grafo original
-    List* vertices = g->verticesList;
-    ListMoveToHead(vertices);
-
-    for (unsigned int i = 0; i < g->numVertices; ListMoveToNext(vertices), i++) {
-        struct _Vertex* v = ListGetCurrentItem(vertices);
-
-        // Percorrer as arestas do vértice atual
-        List* edges = v->edgesList;
-        ListMoveToHead(edges);
-
-        for (unsigned int j = 0; j < v->outDegree; ListMoveToNext(edges), j++) {
-            struct _Edge* e = ListGetCurrentItem(edges);
-
-            // Adicionar a aresta invertida ao grafo transposto
-            GraphAddEdge(transpose, e->adjVertex, v->id);
-        }
-    }
-
-    return transpose;
+  return NULL;
 }
-
 
 void GraphDestroy(Graph** p) {
   assert(*p != NULL);
