@@ -20,6 +20,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "Graph.h"
 #include "GraphAllPairsShortestDistances.h"
@@ -39,19 +40,66 @@ struct _GraphEccentricityMeasures {
 // Compute graph radius and graph diameter
 // Compute the set of central vertices
 GraphEccentricityMeasures* GraphEccentricityMeasuresCompute(Graph* g) {
-  assert(g != NULL);
+    assert(g != NULL);
 
-  // COMPLETE THE CODE
-  // CREATE AUXILIARY (static) FUNCTIONS, IF USEFUL
-  // Graph radius --- the smallest vertex eccentricity value
-  // Graph diameter --- the largest vertex eccentricity value
-  // Do not forget that -1 represents an IDEFINITE value
+    unsigned int numVertices = GraphGetNumVertices(g);
+    GraphEccentricityMeasures* measures = (GraphEccentricityMeasures*)malloc(sizeof(GraphEccentricityMeasures));
+    assert(measures != NULL);
 
-  // Computing the set of central vertices
-  // Allocate the central vertices array : number of central vertices + 1
-  // Fill in the central vertices array
+    measures->graph = g;
+    measures->eccentricity = (int*)malloc(numVertices * sizeof(int));
+    assert(measures->eccentricity != NULL);
 
-  return NULL;
+    measures->graphRadius = INT_MAX;  // Inicializa com um valor alto
+    measures->graphDiameter = -1;    // Inicializa com um valor baixo
+
+    GraphAllPairsShortestDistances* apsd = GraphAllPairsShortestDistancesExecute(g);
+    assert(apsd != NULL);
+
+    // Calcula a excentricidade de cada vértice
+    for (unsigned int v = 0; v < numVertices; v++) {
+        int maxDistance = -1;
+        for (unsigned int w = 0; w < numVertices; w++) {
+            int distance = GraphGetDistanceVW(apsd, v, w);
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
+        }
+        measures->eccentricity[v] = maxDistance;
+
+        // Atualiza raio e diâmetro do grafo
+        if (maxDistance != -1) {  // Ignora vértices não alcançáveis
+            if (maxDistance < measures->graphRadius) {
+                measures->graphRadius = maxDistance;
+            }
+            if (maxDistance > measures->graphDiameter) {
+                measures->graphDiameter = maxDistance;
+            }
+        }
+    }
+
+    // Determina os vértices centrais (com excentricidade igual ao raio)
+    unsigned int centralCount = 0;
+    for (unsigned int v = 0; v < numVertices; v++) {
+        if (measures->eccentricity[v] == measures->graphRadius) {
+            centralCount++;
+        }
+    }
+
+    measures->centralVertices = (unsigned int*)malloc((centralCount + 1) * sizeof(unsigned int));
+    assert(measures->centralVertices != NULL);
+    measures->centralVertices[0] = centralCount;
+
+    unsigned int index = 1;
+    for (unsigned int v = 0; v < numVertices; v++) {
+        if (measures->eccentricity[v] == measures->graphRadius) {
+            measures->centralVertices[index++] = v;
+        }
+    }
+
+    GraphAllPairsShortestDistancesDestroy(&apsd);
+
+    return measures;
 }
 
 void GraphEccentricityMeasuresDestroy(GraphEccentricityMeasures** p) {
@@ -92,17 +140,36 @@ int GraphGetVertexEccentricity(const GraphEccentricityMeasures* p,
 // Getting a copy of the set of central vertices
 // centralVertices[0] = number of central vertices in the set
 unsigned int* GraphGetCentralVertices(const GraphEccentricityMeasures* p) {
-  assert(p != NULL);
-  assert(p->centralVertices != NULL);
+    assert(p != NULL);
+    assert(p->centralVertices != NULL);
 
-  // COMPLETE THE CODE
+    // Retorna uma cópia do vetor de vértices centrais
+    unsigned int centralCount = p->centralVertices[0];
+    unsigned int* copy = (unsigned int*)malloc((centralCount + 1) * sizeof(unsigned int));
+    assert(copy != NULL);
+    for (unsigned int i = 0; i <= centralCount; i++) {
+        copy[i] = p->centralVertices[i];
+    }
 
-  return NULL;
+    return copy;
 }
-
 // Print the graph radius and diameter
 // Print the vertex eccentricity values
 // Print the set of central vertices
 void GraphEccentricityMeasuresPrint(const GraphEccentricityMeasures* p) {
-  // COMPLETE THE CODE
+    assert(p != NULL);
+
+    printf("Graph Radius: %d\n", p->graphRadius);
+    printf("Graph Diameter: %d\n", p->graphDiameter);
+
+    printf("Vertex Eccentricity Values:\n");
+    for (unsigned int v = 0; v < GraphGetNumVertices(p->graph); v++) {
+        printf("Vertex %u: %d\n", v, p->eccentricity[v]);
+    }
+
+    printf("Central Vertices:\n");
+    unsigned int centralCount = p->centralVertices[0];
+    for (unsigned int i = 1; i <= centralCount; i++) {
+        printf("Vertex %u\n", p->centralVertices[i]);
+    }
 }
