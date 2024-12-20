@@ -6,10 +6,10 @@
 // GraphBellmanFord - Bellman-Ford Algorithm
 //
 
-// Student Name :
-// Student Number :
-// Student Name :
-// Student Number :
+// Student Name : Joshua Dourado
+// Student Number : 115799
+// Student Name : Alexandre Almeida
+// Student Number : 119380
 
 /*** COMPLETE THE GraphBellmanFordAlgExecute FUNCTION ***/
 
@@ -18,7 +18,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h> // Para INT_MAX
 
 
 #include "Graph.h"
@@ -35,70 +34,92 @@ struct _GraphBellmanFordAlg {
   unsigned int startVertex;  // The root of the shortest-paths tree
 };
 
+
 GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVertex) {
     assert(g != NULL);
     assert(startVertex < GraphGetNumVertices(g));
-    assert(GraphIsWeighted(g) == 0); // Somente grafos não ponderados
+    assert(GraphIsWeighted(g) == 0); // Garantir que o grafo é ponderado
 
-    GraphBellmanFordAlg* result = (GraphBellmanFordAlg*)malloc(sizeof(GraphBellmanFordAlg));
+    unsigned int numVertices = GraphGetNumVertices(g);
+
+    GraphBellmanFordAlg* result =
+        (GraphBellmanFordAlg*)malloc(sizeof(struct _GraphBellmanFordAlg));
     assert(result != NULL);
 
     result->graph = g;
     result->startVertex = startVertex;
 
-    unsigned int numVertices = GraphGetNumVertices(g);
-
-    // Alocar e inicializar arrays
     result->marked = (unsigned int*)calloc(numVertices, sizeof(unsigned int));
     result->distance = (int*)malloc(numVertices * sizeof(int));
     result->predecessor = (int*)malloc(numVertices * sizeof(int));
+
     assert(result->marked != NULL && result->distance != NULL && result->predecessor != NULL);
 
+    // Inicializar distâncias e predecessores
     for (unsigned int i = 0; i < numVertices; i++) {
-        result->distance[i] = INT_MAX; // "Infinito"
-        result->predecessor[i] = -1;  // Sem predecessores inicialmente
+        result->distance[i] = -1; // "Infinito" representado por -1
+        result->predecessor[i] = -1; // Nenhum predecessor inicialmente
     }
-    result->distance[startVertex] = 0; // Distância do vértice inicial para ele mesmo é 0
 
-    // Relaxar arestas |V| - 1 vezes
-    for (unsigned int i = 0; i < numVertices - 1; i++) {
+    // Definir a distância para o vértice inicial como 0
+    result->distance[startVertex] = 0;
+
+    // Relaxar arestas (numVertices - 1) vezes
+    for (unsigned int step = 1; step < numVertices; step++) {
         for (unsigned int u = 0; u < numVertices; u++) {
             unsigned int* adjacents = GraphGetAdjacentsTo(g, u);
-            for (unsigned int j = 1; j <= adjacents[0]; j++) {
-                unsigned int v = adjacents[j];
-                if (result->distance[u] != INT_MAX && result->distance[u] + 1 < result->distance[v]) {
-                    result->distance[v] = result->distance[u] + 1;
+            double* distances = GraphGetDistancesToAdjacents(g, u);
+
+            for (unsigned int i = 0; i < adjacents[0]; i++) {
+                unsigned int v = adjacents[i + 1];
+                double weight = distances[i + 1];
+
+                if (result->distance[u] != -1 &&
+                    (result->distance[v] == -1 || result->distance[u] + weight < result->distance[v])) {
+                    result->distance[v] = result->distance[u] + weight;
                     result->predecessor[v] = u;
                 }
             }
+
             free(adjacents);
+            free(distances);
         }
     }
 
-    // Detectar ciclos negativos (se necessário)
+    // Verificar ciclos negativos
     for (unsigned int u = 0; u < numVertices; u++) {
         unsigned int* adjacents = GraphGetAdjacentsTo(g, u);
-        for (unsigned int j = 1; j <= adjacents[0]; j++) {
-            unsigned int v = adjacents[j];
-            if (result->distance[u] != INT_MAX && result->distance[u] + 1 < result->distance[v]) {
-                printf("Ciclo de peso negativo detectado.\n");
+        double* distances = GraphGetDistancesToAdjacents(g, u);
+
+        for (unsigned int i = 0; i < adjacents[0]; i++) {
+            unsigned int v = adjacents[i + 1];
+            double weight = distances[i + 1];
+
+            if (result->distance[u] != -1 &&
+                result->distance[v] != -1 &&
+                result->distance[u] + weight < result->distance[v]) {
+                fprintf(stderr, "Graph contains a negative-weight cycle\n");
                 free(adjacents);
+                free(distances);
                 GraphBellmanFordAlgDestroy(&result);
                 return NULL;
             }
         }
+
         free(adjacents);
+        free(distances);
     }
 
-    // Marcar vértices alcançados
+    // Atualizar vértices alcançados
     for (unsigned int i = 0; i < numVertices; i++) {
-        if (result->distance[i] != INT_MAX) {
+        if (result->distance[i] != -1) {
             result->marked[i] = 1;
         }
     }
 
     return result;
 }
+
 
 void GraphBellmanFordAlgDestroy(GraphBellmanFordAlg** p) {
   assert(*p != NULL);
