@@ -33,17 +33,19 @@ int main(void) {
   // Bellman-Ford Algorithm
 
   // Consider each vertex as a start vertex
+  InstrReset();     // Resetar contadores
   for (unsigned int i = 0; i < 6; i++) {
     
     GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(dig01, i);
 
-    printf("The shortest path tree rooted at %u\n", i);
-    GraphBellmanFordAlgDisplayDOT(BF_result);
-    InstrPrint();
+   // printf("The shortest path tree rooted at %u\n", i);
+    //GraphBellmanFordAlgDisplayDOT(BF_result);
+   
     printf("\n");
 
     GraphBellmanFordAlgDestroy(&BF_result);
   }
+  InstrPrint();
 
   // What kind of graph is g01?
   Graph* g01 = GraphCreate(6, 0, 0);
@@ -65,17 +67,19 @@ int main(void) {
   // Bellman-Ford Algorithm
 
   // Consider each vertex as a start vertex
+  InstrReset();     // Resetar contadores
   for (unsigned int i = 0; i < 6; i++) {
     
     GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(g01, i);
 
-    printf("The shortest path tree rooted at %u\n", i);
-    GraphBellmanFordAlgDisplayDOT(BF_result);
-    InstrPrint();
+   // printf("The shortest path tree rooted at %u\n", i);
+    //GraphBellmanFordAlgDisplayDOT(BF_result);
+  
     printf("\n");
 
     GraphBellmanFordAlgDestroy(&BF_result);
   }
+  InstrPrint();
 
   // Reading a directed graph from file
   FILE* file = fopen("DG_2.txt", "r");
@@ -90,16 +94,72 @@ int main(void) {
   // Bellman-Ford Algorithm
 
   // Consider each vertex as a start vertex
+  InstrReset();     // Resetar contadores
   for (unsigned int i = 0; i < GraphGetNumVertices(dig03); i++) {
     
     GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(dig03, i);
 
-    printf("The shortest path tree rooted at %u\n", i);
-    GraphBellmanFordAlgDisplayDOT(BF_result);
-    InstrPrint();
+   // printf("The shortest path tree rooted at %u\n", i);
+    //GraphBellmanFordAlgDisplayDOT(BF_result);
+   
     printf("\n");
 
     GraphBellmanFordAlgDestroy(&BF_result);
+  }
+  InstrPrint();
+
+  const char* filenames[] = {
+        "GRAFOS_ORIENTADOS/j1.txt",
+        "GRAFOS_ORIENTADOS/j2.txt",
+        "GRAFOS_ORIENTADOS/j3.txt",
+        "GRAFOS_ORIENTADOS/j4.txt",
+        "GRAFOS_ORIENTADOS/j5.txt",
+        "GRAFOS_ORIENTADOS/j6.txt",
+        "GRAFOS_ORIENTADOS/j7.txt",
+        "GRAFOS_ORIENTADOS/j8.txt",
+        "GRAFOS_ORIENTADOS/j9.txt",
+        "GRAFOS_ORIENTADOS/j10.txt"
+    };
+
+  const unsigned int numFiles = 10;
+
+  for (unsigned int f = 0; f < numFiles; f++) {
+      printf("Processing file: %s\n", filenames[f]);
+
+      FILE* file = fopen(filenames[f], "r");
+      if (file == NULL) {
+          perror("Error opening file");
+          continue; // Pula para o próximo arquivo em caso de erro
+      }
+
+      Graph* digraph = GraphFromFile(file);
+      fclose(file);
+
+      // Exibe o grafo no formato DOT
+      printf("Graph in DOT format:\n");
+      GraphDisplayDOT(digraph);
+      printf("\n");
+
+      // Verifica invariantes do grafo
+      GraphCheckInvariants(digraph);
+
+      // Bellman-Ford Algorithm para cada vértice
+      unsigned int numVertices = GraphGetNumVertices(digraph);
+      InstrReset();     // Resetar contadores
+      for (unsigned int i = 0; i < numVertices; i++) {
+          GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(digraph, i);
+
+          //printf("The shortest path tree rooted at vertex %u:\n", i);
+          // GraphBellmanFordAlgDisplayDOT(BF_result); // Se necessário, descomente esta linha
+          
+          printf("\n");
+
+          GraphBellmanFordAlgDestroy(&BF_result);
+      }
+      InstrPrint();
+
+      // Destroi o grafo
+      GraphDestroy(&digraph);
   }
 
   GraphDestroy(&g01);

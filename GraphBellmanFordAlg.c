@@ -58,7 +58,7 @@ GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVert
 
   assert(result->marked != NULL && result->distance != NULL && result->predecessor != NULL);
 
-  InstrReset();     // Resetar contadores
+ 
 
   // Inicializar distâncias e predecessores
   for (unsigned int i = 0; i < numVertices; i++) {
