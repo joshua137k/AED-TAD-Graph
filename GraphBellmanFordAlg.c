@@ -39,13 +39,14 @@ GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVert
     assert(g != NULL);
     assert(startVertex < GraphGetNumVertices(g));
     assert(GraphIsWeighted(g) == 0); // Garantir que o grafo é ponderado
-
+    
     unsigned int numVertices = GraphGetNumVertices(g);
 
     GraphBellmanFordAlg* result =
         (GraphBellmanFordAlg*)malloc(sizeof(struct _GraphBellmanFordAlg));
     assert(result != NULL);
-
+    
+    InstrReset();     // Resetar contadores
     result->graph = g;
     result->startVertex = startVertex;
 
@@ -59,6 +60,7 @@ GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVert
     for (unsigned int i = 0; i < numVertices; i++) {
         result->distance[i] = -1; // "Infinito" representado por -1
         result->predecessor[i] = -1; // Nenhum predecessor inicialmente
+        InstrCount[0] += 2; // Acesso à memória
     }
 
     // Definir a distância para o vértice inicial como 0
@@ -73,11 +75,14 @@ GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVert
             for (unsigned int i = 0; i < adjacents[0]; i++) {
                 unsigned int v = adjacents[i + 1];
                 double weight = distances[i + 1];
+                InstrCount[0] += 2; // Acesso à memória
 
                 if (result->distance[u] != -1 &&
                     (result->distance[v] == -1 || result->distance[u] + weight < result->distance[v])) {
                     result->distance[v] = result->distance[u] + weight;
                     result->predecessor[v] = u;
+                    InstrCount[0] += 2; // Acesso à memória
+                    InstrCount[1]++;   // Soma
                 }
             }
 
@@ -87,6 +92,7 @@ GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVert
     }
 
     // Verificar ciclos negativos
+    /*
     for (unsigned int u = 0; u < numVertices; u++) {
         unsigned int* adjacents = GraphGetAdjacentsTo(g, u);
         double* distances = GraphGetDistancesToAdjacents(g, u);
@@ -108,12 +114,13 @@ GraphBellmanFordAlg* GraphBellmanFordAlgExecute(Graph* g, unsigned int startVert
 
         free(adjacents);
         free(distances);
-    }
+    }*/
 
     // Atualizar vértices alcançados
     for (unsigned int i = 0; i < numVertices; i++) {
         if (result->distance[i] != -1) {
             result->marked[i] = 1;
+            InstrCount[0]++; // Acesso à memória
         }
     }
 

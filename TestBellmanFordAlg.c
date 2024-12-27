@@ -10,8 +10,14 @@
 
 #include "Graph.h"
 #include "GraphBellmanFordAlg.h"
+#include "instrumentation.h"
 
 int main(void) {
+  InstrName[0] = "memops";
+  InstrName[1] = "adds";
+  InstrCalibrate(); // Calibrar os contadores
+  
+
   // What kind of graph is dig01?
   Graph* dig01 = GraphCreate(6, 1, 0);
   GraphAddEdge(dig01, 1, 2);
@@ -28,10 +34,12 @@ int main(void) {
 
   // Consider each vertex as a start vertex
   for (unsigned int i = 0; i < 6; i++) {
+    
     GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(dig01, i);
 
     printf("The shortest path tree rooted at %u\n", i);
     GraphBellmanFordAlgDisplayDOT(BF_result);
+    InstrPrint();
     printf("\n");
 
     GraphBellmanFordAlgDestroy(&BF_result);
@@ -58,10 +66,12 @@ int main(void) {
 
   // Consider each vertex as a start vertex
   for (unsigned int i = 0; i < 6; i++) {
+    
     GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(g01, i);
 
     printf("The shortest path tree rooted at %u\n", i);
     GraphBellmanFordAlgDisplayDOT(BF_result);
+    InstrPrint();
     printf("\n");
 
     GraphBellmanFordAlgDestroy(&BF_result);
@@ -81,10 +91,12 @@ int main(void) {
 
   // Consider each vertex as a start vertex
   for (unsigned int i = 0; i < GraphGetNumVertices(dig03); i++) {
+    
     GraphBellmanFordAlg* BF_result = GraphBellmanFordAlgExecute(dig03, i);
 
     printf("The shortest path tree rooted at %u\n", i);
     GraphBellmanFordAlgDisplayDOT(BF_result);
+    InstrPrint();
     printf("\n");
 
     GraphBellmanFordAlgDestroy(&BF_result);
