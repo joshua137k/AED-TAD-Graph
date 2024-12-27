@@ -17,6 +17,9 @@ int main(void) {
   // Inicializa a instrumentação
   InstrName[0] = "memory_accesses";
   InstrName[1] = "edge_additions";
+  InstrName[3] = "V";
+  InstrName[4] = "E";
+
   InstrCalibrate();
   
   // What kind of graph is dig01?
@@ -26,7 +29,7 @@ int main(void) {
   GraphAddEdge(dig01, 3, 4);
   printf("The graph:\n");
   // Displaying in DOT format
-  GraphDisplayDOT(dig01);
+  //GraphDisplayDOT(dig01);
   printf("\n");
 
   GraphCheckInvariants(dig01);
@@ -37,7 +40,7 @@ int main(void) {
   InstrPrint(); // Imprime os contadores após a execução
   printf("The transitive closure:\n");
   // Displaying in DOT format
-  GraphDisplayDOT(tcdig01);
+  //GraphDisplayDOT(tcdig01);
   printf("\n");
 
   GraphCheckInvariants(tcdig01);
@@ -47,7 +50,7 @@ int main(void) {
   Graph* dig03 = GraphFromFile(file);
   fclose(file);
   // Displaying in DOT format
-  GraphDisplayDOT(dig03);
+  //GraphDisplayDOT(dig03);
   printf("\n");
 
   GraphCheckInvariants(dig03);
@@ -58,7 +61,7 @@ int main(void) {
   InstrPrint();
   printf("The transitive closure:\n");
   // Displaying in DOT format
-  GraphDisplayDOT(tcdig03);
+  //GraphDisplayDOT(tcdig03);
   printf("\n");
 
   GraphCheckInvariants(tcdig03);
@@ -73,10 +76,16 @@ int main(void) {
         "GRAFOS_ORIENTADOS/j7.txt",
         "GRAFOS_ORIENTADOS/j8.txt",
         "GRAFOS_ORIENTADOS/j9.txt",
-        "GRAFOS_ORIENTADOS/j10.txt"
+        "GRAFOS_ORIENTADOS/j10.txt",
+        "GRAFOS_ORIENTADOS/j11.txt",
+        "GRAFOS_ORIENTADOS/j12.txt",
+        "GRAFOS_ORIENTADOS/j13.txt",
+        "GRAFOS_ORIENTADOS/j14.txt",
+        "GRAFOS_ORIENTADOS/j15.txt"
+
     };
 
-  const unsigned int numFiles = 10;
+  const unsigned int numFiles = 15;
 
   for (unsigned int f = 0; f < numFiles; f++) {
       printf("Processing file: %s\n", filenames[f]);
@@ -92,7 +101,7 @@ int main(void) {
 
       // Exibe o grafo no formato DOT
       printf("Graph in DOT format:\n");
-      GraphDisplayDOT(digraph);
+      //GraphDisplayDOT(digraph);
       printf("\n");
 
       // Verifica invariantes do grafo
@@ -104,7 +113,7 @@ int main(void) {
       InstrPrint();
       printf("The transitive closure:\n");
       // Displaying in DOT format
-      //GraphDisplayDOT(tcdig);
+      ////GraphDisplayDOT(tcdig);
       printf("\n");
       GraphCheckInvariants(tcdig);
 

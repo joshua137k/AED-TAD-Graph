@@ -32,6 +32,8 @@ Graph* GraphComputeTransitiveClosure(Graph* g) {
     assert(GraphIsWeighted(g) == 0);
 
     unsigned int numVertices = GraphGetNumVertices(g);
+    InstrCount[3] = numVertices; // Guardar o número de vértices
+    InstrCount[4] = 2 * numVertices; //2 is a max degree for testes
 
     // Cria o grafo do fecho transitivo com o mesmo número de vértices
     Graph* transitiveClosure = GraphCreate(numVertices, 1, 0);
@@ -44,11 +46,11 @@ Graph* GraphComputeTransitiveClosure(Graph* g) {
         assert(bfResult != NULL);
 
         for (unsigned int w = 0; w < numVertices; w++) {
-            InstrCount[0]++; // Contar um acesso à memória (loop interno)
+            //InstrCount[0]++; // Contar um acesso à memória (loop interno)
             // Se o vértice w for alcançável a partir de v, adiciona a aresta (v, w)
             if (GraphBellmanFordAlgReached(bfResult, w) && v != w) {
                 GraphAddEdge(transitiveClosure, v, w);
-                InstrCount[1]++; // Contar uma operação de adição de aresta
+                //InstrCount[1]++; // Contar uma operação de adição de aresta
             }
         }
 
