@@ -46,11 +46,11 @@ Graph* GraphComputeTransitiveClosure(Graph* g) {
         assert(bfResult != NULL);
 
         for (unsigned int w = 0; w < numVertices; w++) {
-            //InstrCount[0]++; // Contar um acesso à memória (loop interno)
+            InstrCount[0]++; // Contar um acesso à memória (loop interno)
             // Se o vértice w for alcançável a partir de v, adiciona a aresta (v, w)
             if (GraphBellmanFordAlgReached(bfResult, w) && v != w) {
                 GraphAddEdge(transitiveClosure, v, w);
-                //InstrCount[1]++; // Contar uma operação de adição de aresta
+                InstrCount[1]++; // Contar uma operação de adição de aresta
             }
         }
 

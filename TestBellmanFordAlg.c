@@ -109,7 +109,7 @@ int main(void) {
   InstrPrint();
 
   const char* filenames[] = {
-        "GRAFOS_ORIENTADOS/j1.txt",
+       /* "GRAFOS_ORIENTADOS/j1.txt",
         "GRAFOS_ORIENTADOS/j2.txt",
         "GRAFOS_ORIENTADOS/j3.txt",
         "GRAFOS_ORIENTADOS/j4.txt",
@@ -118,10 +118,35 @@ int main(void) {
         "GRAFOS_ORIENTADOS/j7.txt",
         "GRAFOS_ORIENTADOS/j8.txt",
         "GRAFOS_ORIENTADOS/j9.txt",
-        "GRAFOS_ORIENTADOS/j10.txt"
+        "GRAFOS_ORIENTADOS/j10.txt"*/
+
+        "GRAFOS_ORIENTADOS/other2/ll10.txt",
+"GRAFOS_ORIENTADOS/other2/ll11.txt",
+"GRAFOS_ORIENTADOS/other2/ll12.txt",
+"GRAFOS_ORIENTADOS/other2/ll13.txt",
+"GRAFOS_ORIENTADOS/other2/ll14.txt",
+"GRAFOS_ORIENTADOS/other2/ll19.txt",
+"GRAFOS_ORIENTADOS/other2/ll21.txt",
+"GRAFOS_ORIENTADOS/other2/ll22.txt",
+"GRAFOS_ORIENTADOS/other2/ll26.txt",
+"GRAFOS_ORIENTADOS/other2/ll28.txt",
+"GRAFOS_ORIENTADOS/other2/ll30.txt",
+"GRAFOS_ORIENTADOS/other2/ll31.txt",
+"GRAFOS_ORIENTADOS/other2/ll32.txt",
+"GRAFOS_ORIENTADOS/other2/ll34.txt",
+"GRAFOS_ORIENTADOS/other2/ll36.txt",
+"GRAFOS_ORIENTADOS/other2/ll37.txt",
+"GRAFOS_ORIENTADOS/other2/ll40.txt",
+"GRAFOS_ORIENTADOS/other2/ll41.txt",
+"GRAFOS_ORIENTADOS/other2/ll5.txt", 
+"GRAFOS_ORIENTADOS/other2/ll50.txt",
+"GRAFOS_ORIENTADOS/other2/ll51.txt",
+"GRAFOS_ORIENTADOS/other2/ll52.txt",
+"GRAFOS_ORIENTADOS/other2/ll6.txt",
+"GRAFOS_ORIENTADOS/other2/ll8.txt",
     };
 
-  const unsigned int numFiles = 10;
+  const unsigned int numFiles = 24;
 
   for (unsigned int f = 0; f < numFiles; f++) {
       printf("Processing file: %s\n", filenames[f]);
@@ -137,7 +162,7 @@ int main(void) {
 
       // Exibe o grafo no formato DOT
       printf("Graph in DOT format:\n");
-      GraphDisplayDOT(digraph);
+      //GraphDisplayDOT(digraph);
       printf("\n");
 
       // Verifica invariantes do grafo
@@ -152,7 +177,7 @@ int main(void) {
           //printf("The shortest path tree rooted at vertex %u:\n", i);
           // GraphBellmanFordAlgDisplayDOT(BF_result); // Se necessário, descomente esta linha
           
-          printf("\n");
+          //printf("\n");
 
           GraphBellmanFordAlgDestroy(&BF_result);
       }
